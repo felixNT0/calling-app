@@ -192,7 +192,7 @@ function AgoraCall() {
       (obj: any, index: number, self: any) =>
         index === self.findIndex((t: any) => t.uid === obj.uid)
     );
-  }, [videoOff, users]);
+  }, [users]);
 
   return (
     <div className="place-content-center text-center">
@@ -236,6 +236,7 @@ function AgoraCall() {
       ) : null}
 
       {loading && <Loader />}
+
       <div className={`navbar_bg ${joined ? "w-fit" : ""}`}>
         <div className=" w-full p-2 flex items-center justify-center">
           {joined && (
