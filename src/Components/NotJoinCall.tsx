@@ -4,12 +4,12 @@ function NotJoinCall({ handleStart, isGetStarted }: any) {
       <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-800 md:text-5xl lg:text-6xl ">
         Welcome to Video Call Website
       </h1>
-      <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-500">
+      <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48">
         Where all the user of the website can call each other for any occassion
         all over the world
       </p>
       {isGetStarted && (
-        <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-500">
+        <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 ">
           Click the below button to start a call or join a call
         </p>
       )}
@@ -17,7 +17,7 @@ function NotJoinCall({ handleStart, isGetStarted }: any) {
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
           <div
             onClick={handleStart}
-            className="inline-flex cursor-pointer justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg dark:bg-gray-600 dark:hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+            className="inline-flex cursor-pointer justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 "
           >
             Get started
             <svg

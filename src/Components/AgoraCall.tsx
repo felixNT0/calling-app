@@ -1,5 +1,5 @@
 import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BsFillCameraVideoFill,
   BsFillCameraVideoOffFill,
@@ -187,6 +187,13 @@ function AgoraCall() {
     }
   }, [loading, users, joined]);
 
+  const allUsers = useMemo(() => {
+    return users.filter(
+      (obj: any, index: number, self: any) =>
+        index === self.findIndex((t: any) => t.uid === obj.uid)
+    );
+  }, [videoOff, users]);
+
   return (
     <div className="place-content-center text-center">
       {/* {!joined && (
@@ -216,7 +223,7 @@ function AgoraCall() {
       )}
       {joined ? (
         <div className="grid max-md:grid-cols-1 grid-cols-2 gap-8">
-          {users?.map((user: any) => (
+          {allUsers?.map((user: any) => (
             <AgoraVideoPlayer
               key={user.uid}
               userId={user.uid}
@@ -229,7 +236,7 @@ function AgoraCall() {
       ) : null}
 
       {loading && <Loader />}
-      <div className="navbar_bg w-fit">
+      <div className={`navbar_bg ${joined ? "w-fit" : ""}`}>
         <div className=" w-full p-2 flex items-center justify-center">
           {joined && (
             <>
@@ -237,7 +244,7 @@ function AgoraCall() {
                 onClick={togglehandleMuteLocalTrack}
                 data-tooltip-target="tooltip-microphone"
                 type="button"
-                className="p-2.5 group bg-gray-100 rounded-full hover:bg-gray-200 mr-4 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:bg-gray-600 dark:hover:bg-gray-800"
+                className="p-2.5 group rounded-full  mr-4 focus:outline-none focus:ring-4  focus:ring-gray-800 bg-gray-600 hover:bg-gray-800"
               >
                 {muted ? (
                   <BsFillMicMuteFill className="text-white" />
@@ -249,7 +256,7 @@ function AgoraCall() {
                 onClick={handleToggleVideoOffAndOn}
                 data-tooltip-target="tooltip-camera"
                 type="button"
-                className="p-2.5 bg-gray-100 group rounded-full hover:bg-gray-200 mr-4 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:bg-gray-600 dark:hover:bg-gray-800"
+                className="p-2.5  group rounded-full h mr-4 focus:outline-none focus:ring-4  focus:ring-gray-800 bg-gray-600 hover:bg-gray-800"
               >
                 {videoOff ? (
                   <BsFillCameraVideoOffFill className="text-white" />
@@ -266,7 +273,7 @@ function AgoraCall() {
                   onClick={handleStart}
                   data-tooltip-target="tooltip-start-call"
                   type="button"
-                  className="p-2.5 bg-gray-100 group rounded-full hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-200  dark:bg-gray-600 dark:hover:bg-gray-800"
+                  className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 bg-gray-600 hover:bg-gray-800"
                 >
                   <MdCall className="text-white" />
                 </button>
@@ -277,7 +284,7 @@ function AgoraCall() {
               onClick={handleLeave}
               data-tooltip-target="tooltip-end-call"
               type="button"
-              className="p-2.5 bg-gray-100 group rounded-full hover:bg-gray-200  focus:outline-none focus:ring-4 focus:ring-gray-200  dark:bg-gray-600 dark:hover:bg-gray-800"
+              className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 focus:ring-gray-200  bg-gray-600 hover:bg-gray-800"
             >
               <MdCallEnd className="text-white" />
             </button>
