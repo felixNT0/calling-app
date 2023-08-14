@@ -23,11 +23,14 @@ function AgoraCall() {
 
   const [activeUser, setActiveUser] = useState("");
 
+  const randomId = uuidv4();
+  const storedCallId = localStorage.getItem("call-id") || "";
+
   const options = {
     appId: String(process.env.REACT_APP_AGORA_APP_ID),
     channel: String(process.env.REACT_APP_AGORA_APP_CHANNEL_NAME),
     token: String(process.env.REACT_APP_AGORA_APP_TOKEN),
-    uid: uuidv4(),
+    uid: randomId,
   };
 
   const rtc = useRef<{
@@ -187,6 +190,16 @@ function AgoraCall() {
     }
   }, [loading, users, joined]);
 
+  useEffect(() => {
+    if (joined) {
+      localStorage.setItem("call-id", randomId);
+    }
+
+    return () => {
+      localStorage.removeItem("call-id");
+    };
+  }, [joined]);
+
   const allUsers = useMemo(() => {
     return users.filter(
       (obj: any, index: number, self: any) =>
@@ -239,7 +252,7 @@ function AgoraCall() {
 
       <div className={`navbar_bg ${joined ? "w-fit" : ""}`}>
         <div className=" w-full p-2 flex items-center justify-center">
-          {joined && (
+          {joined && !loading && (
             <>
               <button
                 onClick={togglehandleMuteLocalTrack}
@@ -274,21 +287,25 @@ function AgoraCall() {
                   onClick={handleStart}
                   data-tooltip-target="tooltip-start-call"
                   type="button"
-                  className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 bg-gray-600 hover:bg-gray-800"
+                  className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 bg-green-500 hover:bg-gray-800"
                 >
                   <MdCall className="text-white" />
                 </button>
               )}
             </>
           ) : (
-            <button
-              onClick={handleLeave}
-              data-tooltip-target="tooltip-end-call"
-              type="button"
-              className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 focus:ring-gray-200  bg-gray-600 hover:bg-gray-800"
-            >
-              <MdCallEnd className="text-white" />
-            </button>
+            <>
+              {!loading && (
+                <button
+                  onClick={handleLeave}
+                  data-tooltip-target="tooltip-end-call"
+                  type="button"
+                  className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 focus:ring-gray-200  bg-red-500 hover:bg-gray-800"
+                >
+                  <MdCallEnd className="text-white" />
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>

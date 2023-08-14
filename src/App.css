@@ -118,7 +118,7 @@
   transform: scaleY(0.4);
   height: 100%;
   width: var(--boxSize);
-  background: #12e2dc;
+  background: #1f2937;
   animation-duration: 1.2s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
