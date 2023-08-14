@@ -24,7 +24,7 @@ function AgoraCall() {
   const [activeUser, setActiveUser] = useState("");
 
   const randomId = uuidv4();
-  const storedCallId = localStorage.getItem("call-id") || "";
+  // const storedCallId = localStorage.getItem("call-id") || "";
 
   const options = {
     appId: String(process.env.REACT_APP_AGORA_APP_ID),
@@ -190,15 +190,15 @@ function AgoraCall() {
     }
   }, [loading, users, joined]);
 
-  useEffect(() => {
-    if (joined) {
-      localStorage.setItem("call-id", randomId);
-    }
+  // useEffect(() => {
+  //   if (joined) {
+  //     localStorage.setItem("call-id", randomId);
+  //   }
 
-    return () => {
-      localStorage.removeItem("call-id");
-    };
-  }, [joined]);
+  //   return () => {
+  //     localStorage.removeItem("call-id");
+  //   };
+  // }, [joined]);
 
   const allUsers = useMemo(() => {
     return users.filter(
