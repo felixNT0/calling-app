@@ -11,7 +11,6 @@ export const AgoraVideoPlayer = ({
 
   useEffect(() => {
     user?.videoTrack?.play(ref?.current);
-    console.log("activeUser", ref.current);
   }, [user, videoOff]);
 
   return (

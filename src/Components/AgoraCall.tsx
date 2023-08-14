@@ -235,7 +235,7 @@ function AgoraCall() {
         />
       )}
       {joined ? (
-        <div className="grid max-md:grid-cols-1 grid-cols-2 gap-8">
+        <div className="grid max-sm:grid-cols-1 max-md:grid-cols-2 lg:grid-cols-3 gap-8">
           {allUsers?.map((user: any) => (
             <AgoraVideoPlayer
               key={user.uid}

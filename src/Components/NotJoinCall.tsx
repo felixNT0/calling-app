@@ -1,13 +1,23 @@
+import image from "../get-started.svg";
+
 function NotJoinCall({ handleStart, isGetStarted }: any) {
   return (
     <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
       <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-800 md:text-5xl lg:text-6xl ">
         Welcome to Video Call Website
       </h1>
+      <div className="flex justify-center items-center">
+        <img
+          className="max-w-full h-auto mb-5"
+          src={image}
+          alt="Responsive SVG"
+        />
+      </div>
       <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48">
         Where all the user of the website can call each other for any occassion
         all over the world
       </p>
+
       {isGetStarted && (
         <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 ">
           Click the below button to start a call or join a call
