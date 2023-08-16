@@ -55,7 +55,7 @@
   backdrop-filter: blur(15px);
   left: 50%;
   right: 50%;
-  bottom: 7px;
+  bottom: 0 !important;
 }
 
 .modal {
@@ -108,9 +108,9 @@
 .boxContainer {
   display: flex;
   justify-content: space-between;
-  height: 64px;
-  --boxSize: 8px;
-  --gutter: 4px;
+  height: 50px;
+  --boxSize: 5px;
+  --gutter: 3px;
   width: calc((var(--boxSize) + var(--gutter)) * 5);
 }
 

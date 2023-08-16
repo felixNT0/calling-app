@@ -8,7 +8,6 @@ export const AgoraVideoPlayer = ({
   userId,
 }: any) => {
   const ref = useRef<any>(null);
-  const [showBlackScreen, setShowBlackScreen] = useState(false);
   const [videoDimensions, setVideoDimensions] = useState({
     width: 0,
     height: 0,
