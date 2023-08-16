@@ -8,6 +8,12 @@ interface Props {
 }
 
 const OnboardingModal: React.FC<Props> = ({ open, toggleModal }) => {
+  React.useEffect(() => {
+    if (!open) {
+      localStorage.setItem("modal", true.toString());
+    }
+  }, [open]);
+
   return (
     <>
       <div

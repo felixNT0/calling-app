@@ -34,7 +34,7 @@ const MeetingDetailPage = ({
   );
   const onSubmit = async (val: valueType) => {
     const { title, description, startDate } = val;
-    const { token } = await generateAgoraToken(title, startDate);
+    const { token, agoraAppId } = await generateAgoraToken(title, startDate);
     if (token) {
       mutate({
         title: title,
@@ -45,6 +45,7 @@ const MeetingDetailPage = ({
         updateAt: String(new Date()),
         id: id,
         user: user,
+        agoraAppId: agoraAppId,
       });
     }
   };
@@ -63,7 +64,7 @@ const MeetingDetailPage = ({
           <div className="bg-gray-200 p-6 rounded-md">
             <h2 className="text-xl font-semibold mb-2">{title}</h2>
             <h3 className="text-md text-gray-600 mb-4">{description}</h3>
-            <div className="flex flex-col justify-center items-center">
+            <div className="flex flex-col  justify-center items-center">
               <div className="md:w-1/2">
                 <p className="mb-2">
                   <strong>Date:</strong> {dayjs(date).format("MMMM D, YYYY")}
@@ -72,7 +73,7 @@ const MeetingDetailPage = ({
                   <strong>Time:</strong> {dayjs(date).format("h:mm A")}
                 </p>
               </div>
-              <div className="md:w-1/2 flex flex-row gap-5 justify-center items-center mt-5">
+              {/* <div className="md:w-1/2 flex flex-row gap-5 justify-center items-center mt-5">
                 <button className="py-2 px-5 text-base font-medium text-center text-white rounded-lg bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 ">
                   Delete
                 </button>
@@ -82,7 +83,7 @@ const MeetingDetailPage = ({
                 >
                   Edit
                 </button>
-              </div>
+              </div> */}
               <div className="flex space-x-2 mt-5">
                 <FacebookShareButton
                   url={`https://fkt-calling-app.vercel.app/${id}`}

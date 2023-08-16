@@ -4,10 +4,15 @@ import NotJoinCall from "../../Components/NotJoinCall";
 import OnboardingModal from "../../Components/modal/Modal";
 
 function Home() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
-    setIsOpen(true);
+    const visited = localStorage.getItem("modal") || null;
+    if (visited === "true") {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
   }, []);
 
   return (

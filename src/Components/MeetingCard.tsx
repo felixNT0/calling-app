@@ -64,9 +64,9 @@ const MeetingCard = ({
                 {formattedEventTime.format("h:mm A")}
               </p>
             </div>
-            <div className="bg-gray-200 p-4 flex justify-between items-center">
+            <div className="bg-gray-200 p-4 flex max-sm:flex-col gap-1 justify-between items-center">
               <>
-                {isEventPassed ? (
+                {isEventPassed && !currentTimeCheck ? (
                   <p className="text-sm text-gray-600">Event has passed</p>
                 ) : (
                   <p className="text-sm text-gray-600">
@@ -85,7 +85,7 @@ const MeetingCard = ({
                   Join
                 </button>
               </>
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 max-sm:mt-3">
                 <FacebookShareButton
                   url={`https://fkt-calling-app.vercel.app/${id}`}
                   quote={title}
