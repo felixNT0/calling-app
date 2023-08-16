@@ -1,12 +1,10 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:5000";
-// const baseUrl = process.env.REACT_APP_BASE_URL;
-// const baseUrl = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+const baseUrl = process.env.REACT_APP_BASE_URL;
 //
 export const createMeeting = async (data: any) => {
   try {
-    const response = await axios.post(`${baseUrl}/meeting`, data);
+    const response = await axios.post(`${baseUrl}`, data);
     return response.data;
   } catch (error) {
     console.error("Error generating token:", error);
@@ -15,7 +13,7 @@ export const createMeeting = async (data: any) => {
 
 export const getAllMeeting = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/meeting`);
+    const response = await axios.get(`${baseUrl}`);
     return response.data;
   } catch (error) {
     console.error("Error generating token:", error);
@@ -24,7 +22,7 @@ export const getAllMeeting = async () => {
 
 export const getMeetingByIdMeeting = async (id: string) => {
   try {
-    const response = await axios.get(`${baseUrl}/meeting/${id}`);
+    const response = await axios.get(`${baseUrl}/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error generating token:", error);
@@ -33,7 +31,7 @@ export const getMeetingByIdMeeting = async (id: string) => {
 
 export const editMeeting = async (id: string, data: any) => {
   try {
-    const response = await axios.put(`${baseUrl}/meeting/${id}`, data);
+    const response = await axios.put(`${baseUrl}/${id}`, data);
     return response.data;
   } catch (error) {
     console.error("Error generating token:", error);
@@ -42,7 +40,7 @@ export const editMeeting = async (id: string, data: any) => {
 
 export const deleteMeeting = async (id: string) => {
   try {
-    const response = await axios.delete(`${baseUrl}/meeting/${id}`);
+    const response = await axios.delete(`${baseUrl}/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error generating token:", error);
@@ -54,7 +52,7 @@ export const generateAgoraToken = async (
   startDate: string | Date
 ) => {
   try {
-    const response = await axios.post(`${baseUrl}/meeting/agora/token`, {
+    const response = await axios.post(`${baseUrl}/agora/token`, {
       channelName,
       startDate,
     });

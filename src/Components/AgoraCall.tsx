@@ -7,14 +7,7 @@ import { useQuery } from "react-query";
 import { getMeetingByIdMeeting } from "../api";
 import MeetingDetailPage from "./MeetingDetails";
 import BottomActionButtons from "./BottomActionButtons";
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  FacebookIcon,
-  TwitterIcon,
-  WhatsappIcon,
-} from "react-share";
+import { v4 as uuidv4 } from "uuid";
 
 function AgoraCall() {
   const { id } = useParams();
@@ -26,9 +19,9 @@ function AgoraCall() {
   // const [userName, setUserName] = useState("");
   const [isGetStarted, setIsGetStarted] = useState(false);
 
-  const titles = "Meeting with the QA Testers";
-  const ids =
-    "006IACeOEKzBDezyFIjIAOjqfZRlqOSmKLsTMABSBcClQAvPWZXZy0AAAAAIgD38QU9lAjdZAQAAQBEWt5kAgBEWt5kAwBEWt5kBABEWt5k";
+  // const titles = "Meeting with the QA Testers";
+  // const ids =
+  //   "006IACeOEKzBDezyFIjIAOjqfZRlqOSmKLsTMABSBcClQAvPWZXZy0AAAAAIgD38QU9lAjdZAQAAQBEWt5kAgBEWt5kAwBEWt5kBABEWt5k";
   const [activeUser, setActiveUser] = useState("");
 
   const currentActiveUserId = localStorage.getItem("currentActiveUserId") || "";
@@ -37,11 +30,13 @@ function AgoraCall() {
     getMeetingByIdMeeting(id!)
   );
 
+  const randomId = uuidv4();
+
   const options = {
     appId: String(process.env.REACT_APP_AGORA_APP_ID),
-    channel: titles,
-    token: ids,
-    uid: currentActiveUserId,
+    channel: String(process.env.REACT_APP_AGORA_APP_CHANNEL_NAME),
+    token: String(process.env.REACT_APP_AGORA_APP_TOKEN),
+    uid: randomId,
   };
 
   const rtc = useRef<{
@@ -92,6 +87,7 @@ function AgoraCall() {
 
         if (mediaType === "video") {
           // Get `RemoteVideoTrack` in the `user` object.
+          console.log(user);
           setUsers((previousUsers: any) => [...previousUsers, user]);
         }
 
@@ -205,27 +201,6 @@ function AgoraCall() {
     }
   }, [loading, users, joined]);
 
-  // const toggleFlashlight = () => {
-  //   if (("torch" in navigator) as any) {
-  //     navigator.torch
-  //       .toggle()
-  //       .then(() => {
-  //         console.log("Flashlight toggled");
-  //       })
-  //       .catch((error: any) => {
-  //         console.error("Failed to toggle flashlight:", error);
-  //       });
-  //   }
-  // };
-
-  // if ("torch" in navigator) {
-  //   console.log("Torch API is supported");
-  // } else {
-  //   console.log("Torch API is not supported");
-  // }
-
-  const title = "dfkl";
-
   const allUsers = useMemo(() => {
     return users.filter(
       (obj: any, index: number, self: any) =>
@@ -250,27 +225,7 @@ function AgoraCall() {
           ))}
         </div>
       ) : null}
-      <div className="flex space-x-2 mt-5">
-        <FacebookShareButton
-          url={`https://fkt-calling-app.vercel.app/${id}`}
-          quote={title}
-        >
-          <FacebookIcon size={33} round />
-        </FacebookShareButton>
-        <TwitterShareButton
-          url={`https://fkt-calling-app.vercel.app/${id}`}
-          title={title}
-        >
-          <TwitterIcon size={33} round />
-        </TwitterShareButton>
-        <WhatsappShareButton
-          url={`https://fkt-calling-app.vercel.app/${id}`}
-          title={title}
-        >
-          <WhatsappIcon size={33} round />
-        </WhatsappShareButton>
-      </div>
-      {data && <MeetingDetailPage {...data} refetch={refetch} />}
+      {data && !joined && <MeetingDetailPage {...data} refetch={refetch} />}
       {loading && <Loader callConnection={true} />}
       <BottomActionButtons
         joined={joined}
