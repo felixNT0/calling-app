@@ -1,18 +1,23 @@
 import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  BsFillCameraVideoFill,
-  BsFillCameraVideoOffFill,
-  BsFillMicFill,
-  BsFillMicMuteFill,
-} from "react-icons/bs";
-import { MdCall, MdCallEnd } from "react-icons/md";
-import { v4 as uuidv4 } from "uuid";
 import { AgoraVideoPlayer } from "./Agora/AgoraVideoPlayer";
 import Loader from "./Loader";
-import NotJoinCall from "./NotJoinCall";
+import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+import { getMeetingByIdMeeting } from "../api";
+import MeetingDetailPage from "./MeetingDetails";
+import BottomActionButtons from "./BottomActionButtons";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from "react-share";
 
 function AgoraCall() {
+  const { id } = useParams();
   const [joined, setJoined] = useState(false);
   const [muted, setMuted] = useState(false);
   const [videoOff, setVideoOff] = useState(false);
@@ -21,16 +26,22 @@ function AgoraCall() {
   // const [userName, setUserName] = useState("");
   const [isGetStarted, setIsGetStarted] = useState(false);
 
+  const titles = "Meeting with the QA Testers";
+  const ids =
+    "006IACeOEKzBDezyFIjIAOjqfZRlqOSmKLsTMABSBcClQAvPWZXZy0AAAAAIgD38QU9lAjdZAQAAQBEWt5kAgBEWt5kAwBEWt5kBABEWt5k";
   const [activeUser, setActiveUser] = useState("");
 
-  const randomId = uuidv4();
-  // const storedCallId = localStorage.getItem("call-id") || "";
+  const currentActiveUserId = localStorage.getItem("currentActiveUserId") || "";
+
+  const { data, isLoading, refetch } = useQuery(["Meeting-Id", id], () =>
+    getMeetingByIdMeeting(id!)
+  );
 
   const options = {
     appId: String(process.env.REACT_APP_AGORA_APP_ID),
-    channel: String(process.env.REACT_APP_AGORA_APP_CHANNEL_NAME),
-    token: String(process.env.REACT_APP_AGORA_APP_TOKEN),
-    uid: randomId,
+    channel: titles,
+    token: ids,
+    uid: currentActiveUserId,
   };
 
   const rtc = useRef<{
@@ -75,8 +86,8 @@ function AgoraCall() {
       rtc.current.client?.on("user-published", async (user, mediaType) => {
         // Subscribe to a remote user
         await rtc.current.client?.subscribe(user, mediaType);
-        console.log("activeUser", user);
-        console.log("subscribe success");
+        // console.log("activeUser", user);
+        // console.log("subscribe success");
         // console.log(user);
 
         if (mediaType === "video") {
@@ -176,6 +187,10 @@ function AgoraCall() {
         }
       });
     });
+
+    return () => {
+      handleLeave();
+    };
   }, [joined, options.uid]);
 
   useEffect(() => {
@@ -190,15 +205,26 @@ function AgoraCall() {
     }
   }, [loading, users, joined]);
 
-  // useEffect(() => {
-  //   if (joined) {
-  //     localStorage.setItem("call-id", randomId);
+  // const toggleFlashlight = () => {
+  //   if (("torch" in navigator) as any) {
+  //     navigator.torch
+  //       .toggle()
+  //       .then(() => {
+  //         console.log("Flashlight toggled");
+  //       })
+  //       .catch((error: any) => {
+  //         console.error("Failed to toggle flashlight:", error);
+  //       });
   //   }
+  // };
 
-  //   return () => {
-  //     localStorage.removeItem("call-id");
-  //   };
-  // }, [joined]);
+  // if ("torch" in navigator) {
+  //   console.log("Torch API is supported");
+  // } else {
+  //   console.log("Torch API is not supported");
+  // }
+
+  const title = "dfkl";
 
   const allUsers = useMemo(() => {
     return users.filter(
@@ -207,34 +233,11 @@ function AgoraCall() {
     );
   }, [users]);
 
+  if (isLoading) return <Loader />;
+
   return (
     <div className="place-content-center text-center">
-      {/* {!joined && (
-        <div className="flex justify-center items-center">
-          <div className="text-center w-[300px]">
-            <label
-              htmlFor="first_name"
-              className="block mb-2 text-sm font-medium text-gray-900 "
-            >
-              Your name
-            </label>
-            <input
-              type="text"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Your Name"
-              required
-              onChange={(e) => setUserName(e.target.value)}
-            />
-          </div>
-        </div>
-      )} */}
-      {!joined && (
-        <NotJoinCall
-          handleStart={() => setIsGetStarted(true)}
-          isGetStarted={isGetStarted}
-        />
-      )}
-      {joined ? (
+      {joined && allUsers.length > 0 ? (
         <div className="grid max-sm:grid-cols-1 max-md:grid-cols-2 lg:grid-cols-3 gap-8">
           {allUsers?.map((user: any) => (
             <AgoraVideoPlayer
@@ -247,68 +250,39 @@ function AgoraCall() {
           ))}
         </div>
       ) : null}
-
-      {loading && <Loader />}
-
-      <div className={`navbar_bg ${joined ? "w-fit" : ""}`}>
-        <div className=" w-full p-2 flex items-center justify-center">
-          {joined && !loading && (
-            <>
-              <button
-                onClick={togglehandleMuteLocalTrack}
-                data-tooltip-target="tooltip-microphone"
-                type="button"
-                className="p-2.5 group rounded-full  mr-4 focus:outline-none focus:ring-4  focus:ring-gray-800 bg-gray-600 hover:bg-gray-800"
-              >
-                {muted ? (
-                  <BsFillMicMuteFill className="text-white" />
-                ) : (
-                  <BsFillMicFill className="text-white" />
-                )}
-              </button>
-              <button
-                onClick={handleToggleVideoOffAndOn}
-                data-tooltip-target="tooltip-camera"
-                type="button"
-                className="p-2.5  group rounded-full h mr-4 focus:outline-none focus:ring-4  focus:ring-gray-800 bg-gray-600 hover:bg-gray-800"
-              >
-                {videoOff ? (
-                  <BsFillCameraVideoOffFill className="text-white" />
-                ) : (
-                  <BsFillCameraVideoFill className="text-white" />
-                )}
-              </button>
-            </>
-          )}
-          {!joined ? (
-            <>
-              {isGetStarted && (
-                <button
-                  onClick={handleStart}
-                  data-tooltip-target="tooltip-start-call"
-                  type="button"
-                  className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 bg-green-500 hover:bg-gray-800"
-                >
-                  <MdCall className="text-white" />
-                </button>
-              )}
-            </>
-          ) : (
-            <>
-              {!loading && (
-                <button
-                  onClick={handleLeave}
-                  data-tooltip-target="tooltip-end-call"
-                  type="button"
-                  className="p-2.5 group rounded-full  focus:outline-none focus:ring-4 focus:ring-gray-200  bg-red-500 hover:bg-gray-800"
-                >
-                  <MdCallEnd className="text-white" />
-                </button>
-              )}
-            </>
-          )}
-        </div>
+      <div className="flex space-x-2 mt-5">
+        <FacebookShareButton
+          url={`https://fkt-calling-app.vercel.app/${id}`}
+          quote={title}
+        >
+          <FacebookIcon size={33} round />
+        </FacebookShareButton>
+        <TwitterShareButton
+          url={`https://fkt-calling-app.vercel.app/${id}`}
+          title={title}
+        >
+          <TwitterIcon size={33} round />
+        </TwitterShareButton>
+        <WhatsappShareButton
+          url={`https://fkt-calling-app.vercel.app/${id}`}
+          title={title}
+        >
+          <WhatsappIcon size={33} round />
+        </WhatsappShareButton>
       </div>
+      {data && <MeetingDetailPage {...data} refetch={refetch} />}
+      {loading && <Loader callConnection={true} />}
+      <BottomActionButtons
+        joined={joined}
+        loading={loading}
+        allUsers={allUsers}
+        handleStart={handleStart}
+        handleLeave={handleLeave}
+        togglehandleMuteLocalTrack={togglehandleMuteLocalTrack}
+        muted={muted}
+        handleToggleVideoOffAndOn={handleToggleVideoOffAndOn}
+        videoOff={videoOff}
+      />
     </div>
   );
 }
