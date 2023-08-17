@@ -18,21 +18,10 @@ interface Props {
   title: string;
   description: string;
   date: string;
-  token: string;
-  createAt: string;
   id: string;
-  user: string;
 }
 
-const MeetingCard = ({
-  title,
-  description,
-  date,
-  token,
-  createAt,
-  id,
-  user,
-}: Props) => {
+const MeetingCard = ({ title, description, date, id }: Props) => {
   const navigate = useNavigate();
   const currentTime = dayjs();
   const formattedEventTime = dayjs(date);
@@ -40,7 +29,7 @@ const MeetingCard = ({
   dayjs.locale("en");
 
   const isEventPassed = formattedEventTime.isBefore(currentTime);
-  const eventDateTimeFormat = "h:mm A";
+  // const eventDateTimeFormat = "h:mm A";
 
   const remainingTimeDisplay = formattedEventTime.fromNow();
 
@@ -50,7 +39,7 @@ const MeetingCard = ({
   return (
     <>
       {currentDayCheck && (
-        <div className="w-full md:w-1/2 lg:w-1/3 p-1 transition duration-300 transform hover:scale-105">
+        <div className="w-full p-1 transition duration-300 transform hover:scale-105">
           <div className="bg-gray-100 shadow-lg rounded-lg overflow-hidden">
             <div className="p-6">
               <h2 className="text-xl font-semibold mb-3 text-gray-800">
