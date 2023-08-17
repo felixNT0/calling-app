@@ -1,19 +1,13 @@
 import dayjs from "dayjs";
-import { editMeeting, generateAgoraToken } from "../api";
+import { deleteMeeting, editMeeting, generateAgoraToken } from "../api";
 import { useMutation } from "react-query";
 import React, { useState } from "react";
 import { valueType } from "./NotJoinCall";
 import CreateMeetingModal from "./CreateMeetingModal";
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  FacebookIcon,
-  TwitterIcon,
-  WhatsappIcon,
-  TelegramShareButton,
-  TelegramIcon,
-} from "react-share";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import DeleteModal from "./modal/DeleteModal";
+import DropdownMenu from "./DropDown";
 
 const MeetingDetailPage = ({
   title,
@@ -25,13 +19,36 @@ const MeetingDetailPage = ({
   createAt,
 }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-  const { mutate, isLoading, isSuccess } = useMutation((data: any) =>
-    editMeeting(id!, data)
+  const toggleDeleteModal = () => {
+    setIsDeleteModalOpen(!isDeleteModalOpen);
+  };
+  const { mutate, isLoading, isSuccess } = useMutation(
+    (data: any) => editMeeting(id!, data),
+    {
+      onSuccess: () => {
+        toast("Meeting Edited Successfully");
+      },
+      onError(error, variables, context) {
+        toast("An Error Occured");
+      },
+    }
   );
+  const mutation = useMutation(() => deleteMeeting(id), {
+    onSuccess: () => {
+      toast("Meeting Deleted Successfully");
+      navigate("/");
+    },
+    onError(error, variables, context) {
+      toast("An Error Occured");
+    },
+  });
   const onSubmit = async (val: valueType) => {
     const { title, description, startDate } = val;
     const { token, agoraAppId } = await generateAgoraToken(title, startDate);
@@ -48,6 +65,10 @@ const MeetingDetailPage = ({
         agoraAppId: agoraAppId,
       });
     }
+  };
+
+  const onDelete = () => {
+    mutation.mutate();
   };
 
   React.useEffect(() => {
@@ -74,46 +95,33 @@ const MeetingDetailPage = ({
                 </p>
               </div>
               {/* <div className="md:w-1/2 flex flex-row gap-5 justify-center items-center mt-5">
-                <button className="py-2 px-5 text-base font-medium text-center text-white rounded-lg bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 ">
+                <button
+                  onClick={toggleDeleteModal}
+                  className="py-2 px-5 text-base font-medium text-center text-white rounded-lg bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 "
+                >
                   Delete
                 </button>
                 <button
-                  onClick={toggleModal}
+                  onClick={toggleDeleteModal}
                   className="py-2 px-5 text-base font-medium text-center text-white rounded-lg bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 "
                 >
                   Edit
                 </button>
               </div> */}
-              <div className="flex space-x-2 mt-5">
-                <FacebookShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  quote={title}
-                >
-                  <FacebookIcon size={33} round />
-                </FacebookShareButton>
-                <TwitterShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  title={title}
-                >
-                  <TwitterIcon size={33} round />
-                </TwitterShareButton>
-                <WhatsappShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  title={title}
-                >
-                  <WhatsappIcon size={33} round />
-                </WhatsappShareButton>
-                <TelegramShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  title={title}
-                >
-                  <TelegramIcon size={33} round />
-                </TelegramShareButton>
+
+              <div className="flex items-center justify-center gap-3 mt-5">
+                <p>Share</p>
+                <DropdownMenu title={title} id={id} />
               </div>
             </div>
           </div>
         </div>
       </div>
+      <DeleteModal
+        open={isDeleteModalOpen}
+        toggleModal={toggleModal}
+        onDelete={onDelete}
+      />
       <CreateMeetingModal
         isOpen={isModalOpen}
         onClose={toggleModal}

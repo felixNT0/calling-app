@@ -4,6 +4,9 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App";
+import { ToastContainer } from "react-toastify";
+// import "antd/dist/antd.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(
@@ -13,6 +16,7 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
+      <ToastContainer />
     </QueryClientProvider>
   </React.StrictMode>
 );

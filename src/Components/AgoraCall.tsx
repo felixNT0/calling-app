@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Loader from "./Loader";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -7,6 +7,7 @@ import MeetingDetailPage from "./MeetingDetails";
 import AgoraUIVideoPlayer from "./Agora/AgoraUIVideoPlayer";
 import { MdCall } from "react-icons/md";
 import NavBar from "./NavBar";
+import React from "react";
 
 function AgoraCall() {
   const { id } = useParams();
@@ -17,16 +18,16 @@ function AgoraCall() {
     getMeetingByIdMeeting(id!)
   );
 
-  const toggleStart = () => {
-    setJoined(!joined);
-    setLoading(true);
-  };
+  // const toggleStart = () => {
+  //   setJoined(!joined);
+  //   setLoading(!loading);
+  // };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, [loading]);
+  React.useEffect(() => {
+    if (joined) {
+      setLoading(true);
+    }
+  }, [joined]);
 
   if (isLoading) return <Loader />;
 
@@ -48,16 +49,17 @@ function AgoraCall() {
         {loading && <Loader callConnection={true} />}
         {joined && data && (
           <AgoraUIVideoPlayer
-            toggleStart={toggleStart}
+            setJoined={setJoined}
             token={data?.token}
             channelName={data?.title}
             agoraAppId={data?.agoraAppId}
+            setLoading={setLoading}
           />
         )}
         {!joined && (
           <div className="flex items-center justify-center">
             <button
-              onClick={toggleStart}
+              onClick={() => setJoined(true)}
               data-tooltip-target="tooltip-start-call"
               type="button"
               className="p-2.5 mt-5 text-center group rounded-lg text-white flex items-center focus:outline-none focus:ring-4 bg-green-500 hover:bg-gray-800"

@@ -4,7 +4,9 @@ import { useMutation, useQuery } from "react-query";
 import { createMeeting, generateAgoraToken, getAllMeeting } from "../api";
 import MeetingCard from "./MeetingCard";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
 import React from "react";
+import Loader from "./Loader";
 
 export type valueType = {
   title: string;
@@ -19,16 +21,27 @@ function NotJoinCall() {
     setIsModalOpen(!isModalOpen);
   };
 
-  const { data, refetch } = useQuery(["Meetings"], getAllMeeting);
+  const {
+    data,
+    refetch,
+    isLoading: dataIsLoading,
+  } = useQuery(["Meetings"], getAllMeeting);
 
-  const { mutate, isLoading, isSuccess } = useMutation(createMeeting);
+  const { mutate, isLoading, isSuccess } = useMutation(createMeeting, {
+    onSuccess: () => {
+      toast("Meeting Created Successfully");
+    },
+    onError(error, variables, context) {
+      toast("An Error Occured");
+    },
+  });
 
   const currentActiveUserId = localStorage.getItem("currentActiveUserId") || "";
 
   const onSubmit = async (val: valueType) => {
     const { title, description, startDate } = val;
 
-    const { token } = await generateAgoraToken(title, startDate);
+    const { token, agoraAppId } = await generateAgoraToken(title, startDate);
     if (token) {
       mutate({
         title: title,
@@ -37,6 +50,7 @@ function NotJoinCall() {
         token: token,
         createAt: String(new Date()),
         id: uuidv4(),
+        agoraAppId: agoraAppId,
         user: currentActiveUserId,
       });
     }
@@ -48,6 +62,8 @@ function NotJoinCall() {
       refetch();
     }
   }, [isSuccess]);
+
+  if (dataIsLoading) return <Loader />;
 
   return (
     <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
@@ -61,7 +77,10 @@ function NotJoinCall() {
         {data &&
           data?.map((item: any) => <MeetingCard key={item.id} {...item} />)}
       </div>
-      {(!data || data?.length === 0) && (
+      {data && data?.length === 0 && (
+        <p className="text-black mb-4">No Upcoming meeting currently</p>
+      )}
+      {!data && data?.length === 0 && (
         <p className="text-black mb-4">No Upcoming meeting currently</p>
       )}
       <CreateMeetingModal

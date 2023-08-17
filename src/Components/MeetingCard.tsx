@@ -1,17 +1,8 @@
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  FacebookIcon,
-  TwitterIcon,
-  WhatsappIcon,
-  TelegramShareButton,
-  TelegramIcon,
-} from "react-share";
 import "dayjs/locale/en";
+import DropdownMenu from "./DropDown";
 dayjs.extend(relativeTime);
 
 interface Props {
@@ -53,7 +44,7 @@ const MeetingCard = ({ title, description, date, id }: Props) => {
                 {formattedEventTime.format("h:mm A")}
               </p>
             </div>
-            <div className="bg-gray-200 p-4 flex max-sm:flex-col gap-1 justify-between items-center">
+            <div className="bg-gray-200 p-4 flex  gap-1 justify-between items-center">
               <>
                 {isEventPassed && !currentTimeCheck ? (
                   <p className="text-sm text-gray-600">Event has passed</p>
@@ -74,32 +65,7 @@ const MeetingCard = ({ title, description, date, id }: Props) => {
                   Join
                 </button>
               </>
-              <div className="flex space-x-2 max-sm:mt-3">
-                <FacebookShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  quote={title}
-                >
-                  <FacebookIcon size={25} round />
-                </FacebookShareButton>
-                <TwitterShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  title={title}
-                >
-                  <TwitterIcon size={25} round />
-                </TwitterShareButton>
-                <WhatsappShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  title={title}
-                >
-                  <WhatsappIcon size={25} round />
-                </WhatsappShareButton>
-                <TelegramShareButton
-                  url={`https://fkt-calling-app.vercel.app/${id}`}
-                  title={title}
-                >
-                  <TelegramIcon size={25} round />
-                </TelegramShareButton>
-              </div>
+              <DropdownMenu title={title} id={id} />
             </div>
           </div>
         </div>
