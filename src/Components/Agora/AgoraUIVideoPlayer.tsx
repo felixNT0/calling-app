@@ -4,12 +4,12 @@ function AgoraUIVideoPlayer({
   token,
   channelName,
   toggleStart,
-  agoraAppId,
-}: any) {
+}: // agoraAppId,
+any) {
   const currentActiveUserId = localStorage.getItem("currentActiveUserId") || "";
 
   const rtcProps = {
-    appId: agoraAppId,
+    appId: String(process.env.REACT_APP_AGORA_APP_ID),
     channel: channelName,
     token: token,
     uid: Number(currentActiveUserId),

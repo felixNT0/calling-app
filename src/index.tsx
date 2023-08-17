@@ -6,15 +6,22 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import Home from "./pages/Home";
 import Call from "./pages/Call";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import App from "./App";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/:id",
-    element: <Call />,
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/:id",
+        element: <Call />,
+      },
+    ],
   },
 ]);
 
