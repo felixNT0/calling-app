@@ -34,9 +34,19 @@ function AgoraCall() {
     <>
       {!joined && <NavBar />}
       <div className="place-content-center text-center">
-        {data && !joined && <MeetingDetailPage {...data} refetch={refetch} />}
+        {data && !joined && (
+          <MeetingDetailPage
+            title={data?.title}
+            description={data?.description}
+            date={data?.date}
+            id={data?.id}
+            refetch={refetch}
+            user={data?.user}
+            createAt={data?.createAt}
+          />
+        )}
         {loading && <Loader callConnection={true} />}
-        {joined && (
+        {joined && data && (
           <AgoraUIVideoPlayer
             toggleStart={toggleStart}
             token={data?.token}

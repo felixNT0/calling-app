@@ -58,11 +58,10 @@ function NotJoinCall() {
         Create A Meeting
       </button>
       <div className="flex flex-col md:flex-row gap-4">
-        {data?.map((item: any) => (
-          <MeetingCard key={item.id} {...item} />
-        ))}
+        {data &&
+          data?.map((item: any) => <MeetingCard key={item.id} {...item} />)}
       </div>
-      {(!data || data.length === 0) && (
+      {(!data || data?.length === 0) && (
         <p className="text-black mb-4">No Upcoming meeting currently</p>
       )}
       <CreateMeetingModal
