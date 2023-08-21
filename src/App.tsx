@@ -18,8 +18,13 @@ const router = createBrowserRouter([
 
 function App() {
   useEffect(() => {
+    const currentActiveUserId =
+      localStorage.getItem("currentActiveUserId") || "";
+
     const activeUserId = uuidv4();
-    localStorage.setItem("currentActiveUserId", activeUserId);
+    if (!currentActiveUserId) {
+      localStorage.setItem("currentActiveUserId", activeUserId);
+    }
   }, []);
   return <RouterProvider router={router} />;
 }

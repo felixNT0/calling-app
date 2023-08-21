@@ -102,7 +102,7 @@ const MeetingDetailPage = ({
                   Delete
                 </button>
                 <button
-                  onClick={toggleDeleteModal}
+                  onClick={toggleModal}
                   className="py-2 px-5 text-base font-medium text-center text-white rounded-lg bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:ring-blue-300 "
                 >
                   Edit
@@ -119,7 +119,7 @@ const MeetingDetailPage = ({
       </div>
       <DeleteModal
         open={isDeleteModalOpen}
-        toggleModal={toggleModal}
+        toggleModal={toggleDeleteModal}
         onDelete={onDelete}
       />
       <CreateMeetingModal
