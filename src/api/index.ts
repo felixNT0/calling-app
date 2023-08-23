@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const baseUrl = process.env.REACT_APP_BASE_URL;
-const baseUrl = "http://localhost:5000/.netlify/functions/api";
+const baseUrl = process.env.REACT_APP_BASE_URL;
+// const baseUrl = "http://localhost:5000/.netlify/functions/api";
 
 export const createMeeting = async (data: any) => {
   try {
